@@ -1,0 +1,4 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+ru.gx.core.rest.config.CommonAutoConfiguration,\
+ru.gx.core.rest.openapi.OpenApiAutoConfiguration
