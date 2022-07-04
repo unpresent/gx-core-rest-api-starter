@@ -21,8 +21,7 @@ import java.security.InvalidParameterException;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class IncomeRestDescriptor<M extends Message<? extends MessageBody>>
-        extends AbstractIncomeChannelHandlerDescriptor<M> {
+public class IncomeRestDescriptor extends AbstractIncomeChannelHandlerDescriptor {
     // -----------------------------------------------------------------------------------------------------------------
     // <editor-fold desc="Fields">
 
@@ -38,7 +37,7 @@ public class IncomeRestDescriptor<M extends Message<? extends MessageBody>>
     // <editor-fold desc="Initialize">
     public IncomeRestDescriptor(
             @NotNull final AbstractIncomeRestsConfiguration owner,
-            @NotNull final ChannelApiDescriptor<M> api,
+            @NotNull final ChannelApiDescriptor<? extends Message<? extends MessageBody>> api,
             @Nullable final IncomeRestDescriptorsDefaults defaults
     ) {
         super(owner, api, defaults);
@@ -56,7 +55,7 @@ public class IncomeRestDescriptor<M extends Message<? extends MessageBody>>
      */
     @SuppressWarnings({"UnusedReturnValue"})
     @NotNull
-    public IncomeRestDescriptor<M> init() throws InvalidParameterException {
+    public IncomeRestDescriptor init() throws InvalidParameterException {
         super.init();
         return this;
     }
@@ -64,7 +63,7 @@ public class IncomeRestDescriptor<M extends Message<? extends MessageBody>>
     @SuppressWarnings("UnusedReturnValue")
     @Override
     @NotNull
-    public IncomeRestDescriptor<M> unInit() {
+    public IncomeRestDescriptor unInit() {
         this.getOwner().internalUnregisterDescriptor(this);
         super.unInit();
         return this;

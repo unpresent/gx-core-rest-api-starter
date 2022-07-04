@@ -57,7 +57,7 @@ public class IncomeRestsProcessor {
 
     @Getter(PROTECTED)
     @NotNull
-    private final Map<Class<? extends Message<?>>, IncomeRestDescriptor<? extends Message<?>>>
+    private final Map<Class<? extends Message<?>>, IncomeRestDescriptor>
             mapMessageClassToDescriptor = new HashMap<>();
 
     // </editor-fold>
@@ -79,10 +79,16 @@ public class IncomeRestsProcessor {
     public void linkMessageClassesToDescriptors() {
         getConfigurations().forEach(
                 config -> config.getAll().forEach(
-                        descriptor -> this.mapMessageClassToDescriptor.put(
-                                descriptor.getApi().getMessageClass(),
-                                (IncomeRestDescriptor<? extends Message<?>>) descriptor
-                        )
+                        descriptor -> {
+                            final var api = descriptor.getApi();
+                            if (api == null) {
+                                throw new NullPointerException("descriptor.getApi() is null!");
+                            }
+                            this.mapMessageClassToDescriptor.put(
+                                    api.getMessageClass(),
+                                    (IncomeRestDescriptor) descriptor
+                            );
+                        }
                 )
         );
     }
@@ -96,10 +102,9 @@ public class IncomeRestsProcessor {
      * @param message сообщение, которое надо обработать.
      * @return Список загруженных объектов.
      */
-    @SuppressWarnings("unchecked")
     public <B extends MessageBody, M extends Message<B>>
     Future<M> processMessage(@NotNull final M message) {
-        final var descriptor = (IncomeRestDescriptor<M>) (
+        final var descriptor = (IncomeRestDescriptor) (
                 message.handleReady()
                         ? message.getChannelDescriptor()
                         : getMapMessageClassToDescriptor().get(message.getClass())
@@ -122,7 +127,7 @@ public class IncomeRestsProcessor {
     public <B extends MessageBody, M extends Message<B>>
     Future<M> processMessage(
             @NotNull final M message,
-            @NotNull final IncomeRestDescriptor<M> descriptor
+            @NotNull final IncomeRestDescriptor descriptor
     ) {
         if (!message.handleReady()) {
             message.setChannelDescriptor(descriptor);
@@ -146,12 +151,17 @@ public class IncomeRestsProcessor {
      *
      * @param descriptor описатель, который проверяем.
      */
-    protected void checkDescriptorIsActive(@NotNull final IncomeRestDescriptor<?> descriptor) {
+    protected void checkDescriptorIsActive(@NotNull final IncomeRestDescriptor descriptor) {
+        final var api = descriptor.getApi();
+        if (api == null) {
+            throw new NullPointerException("descriptor.getApi() is null!");
+        }
+
         if (!descriptor.isInitialized()) {
-            throw new ChannelConfigurationException("Channel descriptor " + descriptor.getApi().getName() + " is not initialized!");
+            throw new ChannelConfigurationException("Channel descriptor " + api.getName() + " is not initialized!");
         }
         if (!descriptor.isEnabled()) {
-            throw new ChannelConfigurationException("Channel descriptor " + descriptor.getApi().getName() + " is not enabled!");
+            throw new ChannelConfigurationException("Channel descriptor " + api.getName() + " is not enabled!");
         }
     }
 
@@ -165,10 +175,10 @@ public class IncomeRestsProcessor {
     protected <B extends MessageBody, M extends Message<B>>
     Future<M> internalProcessMessage(
             @NotNull final M message,
-            @NotNull final IncomeRestDescriptor<M> descriptor
+            @NotNull final IncomeRestDescriptor descriptor
     ) {
         // TODO: ...
-        final var executingBox = new IncomeRestExecutingBox<>();
+        return null;
     }
 
     // </editor-fold>

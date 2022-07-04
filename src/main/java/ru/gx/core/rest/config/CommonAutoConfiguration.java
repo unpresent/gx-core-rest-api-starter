@@ -25,9 +25,6 @@ import ru.gx.core.rest.rest.template.ResponseErrorHandlerImpl;
 @EnableConfigurationProperties(ConfigurationPropertiesService.class)
 public class CommonAutoConfiguration {
     // -----------------------------------------------------------------------------------------------------------------
-    @Setter(value = AccessLevel.PROTECTED, onMethod_ = @Autowired)
-    private ObjectMapper objectMapper;
-    // -----------------------------------------------------------------------------------------------------------------
     // <editor-fold desc="RestTemplate">
     @Bean
     @ConditionalOnMissingBean
@@ -37,8 +34,9 @@ public class CommonAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ResponseErrorHandlerImpl responseErrorHandler() {
-        return new ResponseErrorHandlerImpl(this.objectMapper);
+    @Autowired
+    public ResponseErrorHandlerImpl responseErrorHandler(@NotNull final ObjectMapper objectMapper) {
+        return new ResponseErrorHandlerImpl(objectMapper);
     }
 
     @Bean

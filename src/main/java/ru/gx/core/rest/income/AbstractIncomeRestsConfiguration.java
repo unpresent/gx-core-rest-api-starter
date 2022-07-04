@@ -28,7 +28,7 @@ public abstract class AbstractIncomeRestsConfiguration extends AbstractChannelsC
     // -------------------------------------------------------------------------------------------------------------
     // <editor-fold desc="реализация IncomeTopicsConfiguration">
     @Override
-    protected <M extends Message<? extends MessageBody>, D extends ChannelHandlerDescriptor<M>>
+    protected <D extends ChannelHandlerDescriptor>
     boolean allowCreateDescriptor(@NotNull Class<D> descriptorClass) {
         return IncomeRestDescriptor.class.isAssignableFrom(descriptorClass);
     }
