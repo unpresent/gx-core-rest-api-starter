@@ -1,4 +1,4 @@
-package ru.gx.core.rest.rest.template;
+package ru.gx.core.api.rest.template;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpRequest;

@@ -1,4 +1,4 @@
-package ru.gx.core.rest.income;
+package ru.gx.core.api.income;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

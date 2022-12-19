@@ -1,4 +1,4 @@
-package ru.gx.core.rest.rest.template;
+package ru.gx.core.api.rest.template;
 
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.web.client.RestTemplate;

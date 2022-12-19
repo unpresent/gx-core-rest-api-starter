@@ -1,4 +1,4 @@
-package ru.gx.core.rest.rest;
+package ru.gx.core.api.rest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

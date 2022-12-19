@@ -1,18 +1,20 @@
-package ru.gx.core.rest.rest.template;
+package ru.gx.core.api.rest.template;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.core.log.LogFormatUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.*;
-import ru.gx.core.rest.rest.ExceptionRestResponse;
+import ru.gx.core.api.rest.ExceptionRestResponse;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -114,7 +116,10 @@ public class ResponseErrorHandlerImpl implements ResponseErrorHandler {
             // do nothing
         }
 
-        if(exceptionRestResponse != null) {
+        if (exceptionRestResponse != null
+                && (exceptionRestResponse.getMessage() != null
+                || exceptionRestResponse.getCause() != null
+                || exceptionRestResponse.getClassName() != null)) {
             throw new ExceptionRestResponseWrapper(exceptionRestResponse);
         }
 

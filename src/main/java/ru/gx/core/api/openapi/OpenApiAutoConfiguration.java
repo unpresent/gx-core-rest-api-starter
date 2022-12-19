@@ -1,4 +1,4 @@
-package ru.gx.core.rest.openapi;
+package ru.gx.core.api.openapi;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.gx.core.rest.config.ConfigurationPropertiesService;
+import ru.gx.core.api.config.ConfigurationPropertiesService;
 
 @Configuration
 @EnableConfigurationProperties(ConfigurationPropertiesService.class)

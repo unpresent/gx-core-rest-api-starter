@@ -1,51 +1,39 @@
-package ru.gx.core.rest.config;
+package ru.gx.core.api.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.AccessLevel;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
-import ru.gx.core.rest.rest.AdviceController;
-import ru.gx.core.rest.rest.RedirectController;
-import ru.gx.core.rest.rest.template.CustomRestTemplateCustomizer;
-import ru.gx.core.rest.rest.template.ResponseErrorHandlerImpl;
+import ru.gx.core.api.rest.RedirectController;
+import ru.gx.core.api.rest.template.CustomRestTemplateCustomizer;
+import ru.gx.core.api.rest.template.ResponseErrorHandlerImpl;
+import ru.gx.core.api.standard_rests.StandardRestExitController;
 
 @Configuration
-@EnableConfigurationProperties(ConfigurationPropertiesService.class)
+@ComponentScan("ru.gx.core.api")
+@EnableConfigurationProperties({ConfigurationPropertiesService.class, ConfigurationPropertiesStandardRestsService.class})
 public class CommonAutoConfiguration {
     // -----------------------------------------------------------------------------------------------------------------
     // <editor-fold desc="RestTemplate">
     @Bean
     @ConditionalOnMissingBean
-    public CustomRestTemplateCustomizer customRestTemplateCustomizer() {
-        return new CustomRestTemplateCustomizer();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    @Autowired
-    public ResponseErrorHandlerImpl responseErrorHandler(@NotNull final ObjectMapper objectMapper) {
-        return new ResponseErrorHandlerImpl(objectMapper);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public RestTemplate restTemplate(@NotNull final ResponseErrorHandlerImpl responseErrorHandlerImpl) {
+    public RestTemplate restTemplate(@NotNull final ResponseErrorHandler responseErrorHandler) {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(responseErrorHandlerImpl);
+        restTemplate.setErrorHandler(responseErrorHandler);
         return restTemplate;
     }
+
     // </editor-fold>
     // -----------------------------------------------------------------------------------------------------------------
     // <editor-fold desc="Serialization">
@@ -60,20 +48,32 @@ public class CommonAutoConfiguration {
     }
     // </editor-fold>
     // -----------------------------------------------------------------------------------------------------------------
-    // <editor-fold desc="Rest controllers">
+
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "rest-service-api.redirect-controller-enabled", havingValue = "true")
-    protected RedirectController redirectController() {
-        return new RedirectController();
+    public CustomRestTemplateCustomizer customRestTemplateCustomizer() {
+        return new CustomRestTemplateCustomizer();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "rest-service-api.advice-controller-enabled", havingValue = "true")
-    protected AdviceController adviceController(@NotNull final ObjectMapper objectMapper) {
-        return new AdviceController(objectMapper);
+    public ResponseErrorHandler responseErrorHandler(
+            @NotNull final ObjectMapper objectMapper
+    ) {
+        return new ResponseErrorHandlerImpl(objectMapper);
     }
-    // </editor-fold>
-    // -----------------------------------------------------------------------------------------------------------------
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(value = "rest-service-api.redirect-controller-enabled", havingValue = "true")
+    public RedirectController redirectController() {
+        return new RedirectController();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "service.standard-rests.exit.enabled", havingValue = "true")
+    @ConditionalOnMissingBean
+    public StandardRestExitController standardRestExitController() {
+        return new StandardRestExitController();
+    }
 }

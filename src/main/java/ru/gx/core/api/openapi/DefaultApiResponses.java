@@ -1,10 +1,10 @@
-package ru.gx.core.rest.openapi;
+package ru.gx.core.api.openapi;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import ru.gx.core.rest.rest.ExceptionRestResponse;
+import ru.gx.core.api.rest.ExceptionRestResponse;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
